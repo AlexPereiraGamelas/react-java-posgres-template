@@ -1,22 +1,21 @@
-.PHONY: build run clean docker-up docker-down logs
+.PHONY: dev prod down clean
 
-APP_NAME=api
-JAR=target/$(APP_NAME)-1.0.0.jar
+fe-dev:
+	docker compose -f docker-compose.dev.yml up --build -d
+	cd frontend && npm run dev
 
-build:
-	mvn clean package
-
-run: build
-	java -jar $(JAR)
-
-clean:
-	mvn clean
-
-docker-up:
+prod:
 	docker compose up --build
 
-docker-down:
+api-rebuild:
+    docker compose build api
+    docker compose up -d api
+
+api-logs:
+    docker compose logs -f api
+
+down:
 	docker compose down
 
-logs:
-	docker compose logs -f api
+clean:
+	docker compose down -v
