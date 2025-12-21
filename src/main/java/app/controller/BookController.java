@@ -7,6 +7,7 @@ import app.model.Book;
 import app.routing.Router;
 import app.service.BookService;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class BookController implements Controller{
@@ -15,11 +16,12 @@ public class BookController implements Controller{
 
     @Override
     public void registerRoutes(Router router) {
-        router.register("GET", "/book/{id}", this::find);
+        router.register("GET", "/book/{id}", this::get);
         router.register("GET", "/books", this::listAll);
+        router.register("POST", "/books/new", this::create);
     }
 
-    public Response find(Request req) {
+    public Response get(Request req) {
         /*
         * Handle path parameter with typecasting
         */
@@ -43,5 +45,12 @@ public class BookController implements Controller{
 
         PaginatedResponse<Book> result = bookService.getBooks(offset, limit);
         return Response.json(200, result);
+    }
+
+    // Create book
+    public Response create(Request req) throws IOException {
+        Book book = req.body(Book.class);
+        Book created = bookService.register(book);
+        return Response.json(201, created);
     }
 }

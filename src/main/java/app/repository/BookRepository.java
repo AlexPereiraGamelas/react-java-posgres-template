@@ -40,6 +40,29 @@ public class BookRepository extends AbstractRepository {
         });
     }
 
+    public Book register(Book book) {
+        return withConnection(conn -> {
+            PreparedStatement ps = conn.prepareStatement(
+                    """
+                    INSERT INTO books (title, author, publisher)
+                    VALUES (?, ?, ?)
+                    RETURNING (id, title, author, publisher)
+                    """
+            );
+
+            ps.setString(1, book.getTitle());
+            ps.setString(2, book.getAuthor());
+            ps.setString(3, book.getPublisher());
+
+            ResultSet rs = ps.executeQuery();
+            if (!rs.next()) {
+                throw new RuntimeException("Failed to insert book");
+            }
+
+            return map(rs);
+        });
+    }
+
     private Book map(ResultSet rs) throws Exception {
         return new Book(
                 rs.getLong("id"),

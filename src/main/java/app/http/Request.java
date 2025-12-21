@@ -1,5 +1,6 @@
 package app.http;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
@@ -8,9 +9,11 @@ import java.util.Map;
 
 public class Request {
 
+    private static final Gson gson = new Gson();
     private final HttpExchange exchange;
     private final Map<String, String> pathParams;
     private final Map<String, String> queryParams;
+    private String cachedBody;
 
     public Request(HttpExchange exchange, Map<String, String> pathParams, Map<String, String> queryParams) {
         this.exchange = exchange;
@@ -26,8 +29,20 @@ public class Request {
         return exchange.getRequestURI().getPath();
     }
 
+    // Raw body
     public String body() throws IOException {
-        return new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+        if (cachedBody == null) {
+            cachedBody = new String(
+                    exchange.getRequestBody().readAllBytes(),
+                    StandardCharsets.UTF_8
+            );
+        }
+        return cachedBody;
+    }
+
+    // JSON → POJO
+    public <T> T body(Class<T> clazz) throws IOException {
+        return gson.fromJson(body(), clazz);
     }
 
     public String pathParam(String name) {

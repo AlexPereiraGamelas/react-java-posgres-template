@@ -1,6 +1,7 @@
 package app.service;
 
 import app.http.PaginatedResponse;
+import app.http.Response;
 import app.model.Book;
 import app.repository.BookRepository;
 
@@ -17,5 +18,9 @@ public class BookService {
         List<Book> books = bookRepository.findAll();
         int total = books.size();
         return new PaginatedResponse<>(books, total, offset);
+    }
+
+    public Book register(Book book) {
+        return bookRepository.register(book);
     }
 }
