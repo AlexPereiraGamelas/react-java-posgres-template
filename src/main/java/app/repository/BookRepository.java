@@ -46,7 +46,7 @@ public class BookRepository extends AbstractRepository {
                     """
                     INSERT INTO books (title, author, publisher)
                     VALUES (?, ?, ?)
-                    RETURNING (id, title, author, publisher)
+                    RETURNING id, title, author, publisher
                     """
             );
 
