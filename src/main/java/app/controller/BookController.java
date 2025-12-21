@@ -11,6 +11,6 @@ public class BookController {
 
     public Response find(Request req) {
         Book book = bookService.getBookById();
-        return Response.json(200, BookService.toJson(book));
+        return Response.json(200, book);
     }
 }

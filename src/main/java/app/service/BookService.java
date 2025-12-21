@@ -13,13 +13,4 @@ public class BookService {
     public Book getBookById() {
         return bookRepository.findById(1);
     }
-
-    public static String toJson(Book book) {
-        return "{"
-                + "\"id\":" + book.getId() + ","
-                + "\"title\":" + book.getTitle() + ","
-                + "\"author\":\"" + book.getAuthor() + "\","
-                + "\"publisher\":\"" + book.getPublisher() + "\""
-                + "}";
-    }
 }
