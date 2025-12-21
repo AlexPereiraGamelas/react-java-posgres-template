@@ -53,11 +53,31 @@ make --version
 ```
 ---
 ## Running the Application
-| Command          | Description                      |
-| ---------------- | -------------------------------- |
-| make run         | Build and run the API locally    |
-| make build       | Build the shaded JAR             |
-| make clean       | Clean Maven artifacts            |
-| make docker-up   | Build and start API and database |
-| make docker-down | Stop containers                  |
-| make logs        | Follow API logs                  |
+### Development Mode
+Run API + DB in Docker, frontend with Vite (HMR):
+```bash
+make fe-dev
+```
+### Production Mode
+Run all services fully in Docker (frontend served by Nginx):
+```bash
+make prod
+```
+### Backend Helpers
+Rebuild and restart the API after code changes:
+```bash
+make api-rebuild
+```
+View API Logs:
+```bash
+make api-logs
+```
+### Stopping and Cleaning
+Stop all running containers:
+```bash
+make down
+```
+Stop and remove containers + volumes (DB reset):
+```bash
+make clean
+```
