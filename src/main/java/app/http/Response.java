@@ -11,14 +11,6 @@ public class Response {
     public String body;
     public Map<String, String> headers = new HashMap<>();
 
-    public static Response json(int status, String body) {
-        Response r = new Response();
-        r.status = status;
-        r.body = body;
-        r.headers.put("Content-Type", "application/json");
-        return r;
-    }
-
     public static Response json(int status, Object obj) {
         Response r = new Response();
         r.status = status;
