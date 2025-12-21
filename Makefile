@@ -17,6 +17,9 @@ api-rebuild:
 api-logs:
 	docker compose logs -f api
 
+db-logs:
+	docker compose logs -f db
+
 down:
 	docker compose down
 

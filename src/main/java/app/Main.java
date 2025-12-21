@@ -1,7 +1,6 @@
 package app;
 
-import app.controller.HealthcheckController;
-import app.controller.UserController;
+import app.controller.BookController;
 import app.http.FrontController;
 import app.routing.Router;
 import com.sun.net.httpserver.HttpServer;
@@ -16,15 +15,10 @@ public class Main {
         Router router = new Router();
 
         //Controllers
-        UserController userController = new UserController();
-        HealthcheckController healthcheckController = new HealthcheckController();
+        BookController bookController = new BookController();
 
-        //Healthcheck Controller Registry
-        router.register("GET", "/healthcheck", healthcheckController::check);
-
-        //Users Controller Registry
-        router.register("GET", "/users/random", userController::sample);
-        router.register("GET", "/users/default", userController::defaultUser);
+        //Book Controller Registry
+        router.register("GET", "/book", bookController::find);
 
         server.createContext("/", new FrontController(router));
         server.start();
