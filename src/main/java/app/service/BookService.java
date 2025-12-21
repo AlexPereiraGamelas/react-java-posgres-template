@@ -6,11 +6,7 @@ import app.repository.BookRepository;
 public class BookService {
     private final BookRepository bookRepository = new BookRepository();
 
-    public Book getExampleBook() {
-        return new Book(1265, "The Silmarilion", "Tolkien", "Beira Mar");
-    }
-
-    public Book getBookById() {
-        return bookRepository.findById(1);
+    public Book getBookById(long id) {
+        return bookRepository.findById(id);
     }
 }

@@ -12,34 +12,58 @@ public class Router {
 
     private final List<Route> routes = new ArrayList<>();
 
-    public void register(String method, String pathRegex, RouteHandler handler) {
-        routes.add(new Route(method, Pattern.compile(pathRegex), handler));
+    public void register(String method, String pathTemplate, RouteHandler handler) {
+        List<String> paramNames = new ArrayList<>();
+
+        Pattern p = Pattern.compile("\\{([a-zA-Z][a-zA-Z0-9_]*)\\}");
+        Matcher m = p.matcher(pathTemplate);
+        StringBuffer sb = new StringBuffer();
+
+        while (m.find()) {
+            paramNames.add(m.group(1));      // group(1) = param name
+            m.appendReplacement(sb, "([^/]+)");
+        }
+        m.appendTail(sb);
+
+        String regex = "^" + sb.toString() + "$";
+        Pattern compiled = Pattern.compile(regex);
+
+        routes.add(new Route(method, compiled, handler, paramNames));
     }
 
     public Response dispatch(HttpExchange exchange) throws Exception {
         String method = exchange.getRequestMethod();
         String path = exchange.getRequestURI().getPath();
+        String rawQuery = exchange.getRequestURI().getRawQuery();
+
+        Map<String, String> queryParams = parseQuery(rawQuery);
 
         for (Route route : routes) {
-            if (!route.method.equalsIgnoreCase(method)) {
-                continue;
-            }
+            if (!route.method.equalsIgnoreCase(method)) continue;
 
             Matcher matcher = route.pathPattern.matcher(path);
             if (matcher.matches()) {
                 Map<String, String> pathParams = new HashMap<>();
-
-                //regex route parameters matching
-                for (int i = 1; i <= matcher.groupCount(); i++) {
-                    pathParams.put("param" + i, matcher.group(i));
+                for (int i = 0; i < route.paramNames.size(); i++) {
+                    pathParams.put(route.paramNames.get(i), matcher.group(i + 1));
                 }
-
-                Request request = new Request(exchange, pathParams);
+                Request request = new Request(exchange, pathParams, queryParams);
                 return route.handler.handle(request);
             }
         }
 
-        // request has no match in registered routes
-        return Response.json(404, "{ \"error\": \"Not Found\" }");
+        return Response.json(404, Map.of("error", "Not Found"));
+    }
+
+    private Map<String, String> parseQuery(String rawQuery) {
+        Map<String, String> queryParams = new HashMap<>();
+        if (rawQuery == null || rawQuery.isEmpty()) return queryParams;
+
+        String[] pairs = rawQuery.split("&");
+        for (String pair : pairs) {
+            String[] kv = pair.split("=", 2);
+            queryParams.put(kv[0], kv.length > 1 ? kv[1] : "");
+        }
+        return queryParams;
     }
 }

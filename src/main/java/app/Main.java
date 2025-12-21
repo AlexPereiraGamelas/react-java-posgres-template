@@ -1,11 +1,13 @@
 package app;
 
 import app.controller.BookController;
+import app.controller.Controller;
 import app.http.FrontController;
 import app.routing.Router;
 import com.sun.net.httpserver.HttpServer;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -15,10 +17,14 @@ public class Main {
         Router router = new Router();
 
         //Controllers
-        BookController bookController = new BookController();
-
-        //Book Controller Registry
-        router.register("GET", "/book", bookController::find);
+        List<Controller> controllers = List.of(
+                new BookController()
+        );
+        
+        //Route Registry
+        for (Controller c : controllers) {
+            c.registerRoutes(router);
+        }
 
         server.createContext("/", new FrontController(router));
         server.start();
