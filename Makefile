@@ -1,18 +1,21 @@
 .PHONY: dev prod down clean
 
-fe-dev:
-	docker compose -f docker-compose.dev.yml up --build -d
-	cd frontend && npm run dev
-
 prod:
 	docker compose up --build
 
+fe-dev:
+	docker compose -f docker-compose.dev.yaml up --build -d
+	cd frontend && npm install && npm run dev
+
+fe-clean:
+	cd frontend && rm -rf node_modules package-lock.json
+
 api-rebuild:
-    docker compose build api
-    docker compose up -d api
+	docker compose build api
+	docker compose up -d api
 
 api-logs:
-    docker compose logs -f api
+	docker compose logs -f api
 
 down:
 	docker compose down
