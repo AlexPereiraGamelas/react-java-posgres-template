@@ -5,6 +5,8 @@ import app.model.Book;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BookRepository extends AbstractRepository {
 
@@ -19,6 +21,22 @@ public class BookRepository extends AbstractRepository {
             if (!rs.next()) return null;
 
             return map(rs);
+        });
+    }
+
+    public List<Book> findAll() {
+        return withConnection(conn -> {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT id, title, author, publisher FROM books ORDER BY id"
+            );
+
+            ResultSet rs = ps.executeQuery();
+            List<Book> books = new ArrayList<>();
+            while (rs.next()) {
+                books.add(map(rs));
+            }
+
+            return books;
         });
     }
 
