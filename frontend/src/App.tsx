@@ -17,7 +17,7 @@ function App() {
             .then(data => {
                 setBooks(data.items)
             })
-    },[])
+    }, [])
 
     const handleSubmit = useCallback((form: FormEvent<HTMLFormElement>) => {
         form.preventDefault();
@@ -33,33 +33,33 @@ function App() {
         }));
     }, [])
 
-  return (
-      <main>
-          <form
-              onSubmit={handleSubmit}
-              style={{display: "flex", flexDirection:"column", padding:"0 30%", gap: "1rem", marginBottom: "8rem"}
-          }>
-              <h3>Register New Book</h3>
-              <input name={"title"} type={"text"} placeholder={"Book title"} required={true}></input>
-              <input name={"author"} type={"text"} placeholder={"Book author"} required={true}></input>
-              <input name={"publisher"} type={"text"} placeholder={"Book publisher"} required={true}></input>
-              <button type={"submit"}>Create</button>
-          </form>
+    return (
+        <main>
+            <form
+                onSubmit={handleSubmit}
+                style={{display: "flex", flexDirection: "column", padding: "0 30%", gap: "1rem", marginBottom: "8rem"}
+                }>
+                <h3>Register New Book</h3>
+                <input name={"title"} type={"text"} placeholder={"Book title"} required={true}></input>
+                <input name={"author"} type={"text"} placeholder={"Book author"} required={true}></input>
+                <input name={"publisher"} type={"text"} placeholder={"Book publisher"} required={true}></input>
+                <button type={"submit"}>Create</button>
+            </form>
 
-          <div>
-              <h1>All Books</h1>
-              <hr/>
-              {books?.map(book => (
-                  <div key={book?.id}>
-                      <h2>{book?.title}</h2>
-                      <h3>{book?.author}</h3>
-                      <p>Published by {book?.publisher}</p>
-                      <hr/>
-                  </div>
-              ))}
-          </div>
-      </main>
-  )
+            <div>
+                <h1>All Books</h1>
+                <hr/>
+                {books?.map(book => (
+                    <div key={book?.id}>
+                        <h2>{book?.title}</h2>
+                        <h3>{book?.author}</h3>
+                        <p>Published by {book?.publisher}</p>
+                        <hr/>
+                    </div>
+                ))}
+            </div>
+        </main>
+    )
 }
 
 export default App
