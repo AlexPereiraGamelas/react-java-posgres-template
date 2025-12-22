@@ -15,7 +15,7 @@ public class BookService {
 
     private final BookRepository bookRepository = new BookRepository();
 
-    public Book getBookById(long id) {
+    public Book getBookById(Integer id) {
         return bookRepository.findById(id);
     }
 

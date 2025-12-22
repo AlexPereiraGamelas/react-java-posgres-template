@@ -24,22 +24,6 @@ public class BookController implements Controller {
         router.register("DELETE", "/book/{id}", this::delete);
     }
 
-    public Response read(Request req) {
-        /*
-         * Handle path parameter with typecasting
-         */
-        String idParameter = req.pathParam("id");
-        int id;
-        try {
-            id = Integer.parseInt(idParameter);
-        } catch (NumberFormatException e) {
-            return Response.json(400, Map.of("error", "Invalid book id"));
-        }
-
-        Book book = bookService.getBookById(id);
-        return Response.json(200, book);
-    }
-
     // List all with pagination
     public Response list(Request req) {
         Integer offset = req.queryParamAsInt("offset");
@@ -47,6 +31,12 @@ public class BookController implements Controller {
 
         PaginatedResponse<Book> result = bookService.getBooks(offset, limit);
         return Response.json(200, result);
+    }
+
+    public Response read(Request req) {
+        Integer id = req.pathParamAsInt("id");
+        Book book = bookService.getBookById(id);
+        return Response.json(200, book);
     }
 
     // Create book
