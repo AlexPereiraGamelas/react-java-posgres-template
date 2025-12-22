@@ -35,4 +35,10 @@ public class BookService {
         if (updated == null) return Response.json(404, Map.of("error", "Book not found"));
         return Response.json(200, updated);
     }
+
+    public Response deleteBook(Integer id) {
+        boolean deleted = bookRepository.delete(id);
+        if (!deleted) return Response.json(404, Map.of("error", "Book not found"));
+        return Response.json(200, Map.of("message", "Book deleted successfully"));
+    }
 }

@@ -98,6 +98,18 @@ public class BookRepository extends AbstractRepository {
             return map(rs);
         });
     }
+    
+    public boolean delete(Integer id) {
+        return withConnection(conn -> {
+            PreparedStatement ps = conn.prepareStatement(
+                    "DELETE FROM books WHERE id = ?"
+            );
+            ps.setInt(1, id);
+
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0; // true if a row was deleted
+        });
+    }
 
     private Book map(ResultSet rs) throws Exception {
         return new Book(

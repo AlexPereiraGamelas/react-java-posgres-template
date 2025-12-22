@@ -17,13 +17,14 @@ public class BookController implements Controller {
 
     @Override
     public void registerRoutes(Router router) {
-        router.register("GET", "/book/{id}", this::get);
-        router.register("GET", "/books", this::listAll);
+        router.register("GET", "/book/{id}", this::read);
+        router.register("GET", "/books", this::list);
         router.register("POST", "/books/new", this::create);
         router.register("PUT", "/book/{id}", this::update);
+        router.register("DELETE", "/book/{id}", this::delete);
     }
 
-    public Response get(Request req) {
+    public Response read(Request req) {
         /*
          * Handle path parameter with typecasting
          */
@@ -40,7 +41,7 @@ public class BookController implements Controller {
     }
 
     // List all with pagination
-    public Response listAll(Request req) {
+    public Response list(Request req) {
         Integer offset = req.queryParamAsInt("offset");
         Integer limit = req.queryParamAsInt("limit");
 
@@ -59,5 +60,10 @@ public class BookController implements Controller {
         Integer id = req.pathParamAsInt("id");
         Book book = req.body(Book.class);
         return bookService.updateBook(id, book);
+    }
+
+    public Response delete(Request req) {
+        Integer id = req.pathParamAsInt("id");
+        return bookService.deleteBook(id);
     }
 }

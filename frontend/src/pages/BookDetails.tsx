@@ -1,5 +1,5 @@
 import {useState, useEffect, useCallback} from "react"
-import {useParams} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 import type {Book} from "src/types/models/Book"
 
 const EMPTY_BOOK = {
@@ -10,6 +10,7 @@ const EMPTY_BOOK = {
 
 const BookDetails = () => {
     const {id: bookID} = useParams()
+    const navigate = useNavigate()
     const [book, setBook] = useState<Book>(EMPTY_BOOK)
     const [formBook, setFormBook] = useState<Book>(EMPTY_BOOK)
     const {title: formTitle, author: formAuthor, publisher: formPublisher} = formBook
@@ -47,6 +48,15 @@ const BookDetails = () => {
         }))
     }, [setFormBook])
 
+    const handleDelete = useCallback(() => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("DELETE", `/api/book/${bookID}`, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send();
+
+        navigate("/")
+    }, [navigate])
+
 
     return (
         <div style={{display: "flex", alignItems: "center", flexDirection: "column", width: "100%", gap: "4rem"}}>
@@ -65,7 +75,6 @@ const BookDetails = () => {
                         flexDirection: "column",
                         padding: "0 30%",
                         gap: "1rem",
-                        marginBottom: "8rem"
                     }
                     }>
                     <input
@@ -91,6 +100,16 @@ const BookDetails = () => {
                     />
                     <button type={"submit"}>Update</button>
                 </form>
+            </div>
+
+            <div style={{width: "100%"}}>
+                <h1>Delete Book</h1>
+                <button
+                    style={{backgroundColor: "red", color: "white", border: "none", padding: "0.5rem 1rem"}}
+                    onClick={handleDelete}
+                >
+                    Delete
+                </button>
             </div>
         </div>
     )
