@@ -20,6 +20,7 @@ public class BookController implements Controller {
         router.register("GET", "/book/{id}", this::get);
         router.register("GET", "/books", this::listAll);
         router.register("POST", "/books/new", this::create);
+        router.register("PUT", "/book/{id}", this::update);
     }
 
     public Response get(Request req) {
@@ -42,7 +43,7 @@ public class BookController implements Controller {
     public Response listAll(Request req) {
         Integer offset = req.queryParamAsInt("offset");
         Integer limit = req.queryParamAsInt("limit");
-        
+
         PaginatedResponse<Book> result = bookService.getBooks(offset, limit);
         return Response.json(200, result);
     }
@@ -52,5 +53,11 @@ public class BookController implements Controller {
         Book book = req.body(Book.class);
         Book created = bookService.register(book);
         return Response.json(201, created);
+    }
+
+    public Response update(Request req) throws IOException {
+        Integer id = req.pathParamAsInt("id");
+        Book book = req.body(Book.class);
+        return bookService.updateBook(id, book);
     }
 }

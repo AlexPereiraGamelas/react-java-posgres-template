@@ -49,6 +49,12 @@ public class Request {
         return pathParams.get(name);
     }
 
+    public Integer pathParamAsInt(String name) {
+        String value = pathParams.get(name);
+        if (value == null || value.isBlank()) return null;
+        return Integer.parseInt(value);
+    }
+
     public String queryParam(String key) {
         return queryParams.get(key);
     }

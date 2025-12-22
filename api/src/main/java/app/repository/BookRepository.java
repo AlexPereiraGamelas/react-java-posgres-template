@@ -73,6 +73,32 @@ public class BookRepository extends AbstractRepository {
         });
     }
 
+    public Book update(Integer id, Book book) {
+        return withConnection(conn -> {
+            PreparedStatement ps = conn.prepareStatement(
+                    """
+                            UPDATE books
+                            SET title = ?, author = ?, publisher = ?
+                            WHERE id = ?
+                            RETURNING id, title, author, publisher
+                            """
+            );
+
+            ps.setString(1, book.getTitle());
+            ps.setString(2, book.getAuthor());
+            ps.setString(3, book.getPublisher());
+            ps.setInt(4, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (!rs.next()) {
+                return null; // no book with that id
+            }
+
+            return map(rs);
+        });
+    }
+
     private Book map(ResultSet rs) throws Exception {
         return new Book(
                 rs.getLong("id"),

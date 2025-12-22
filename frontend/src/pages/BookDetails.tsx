@@ -2,15 +2,24 @@ import {useState, useEffect, useCallback} from "react"
 import {useParams} from "react-router-dom";
 import type {Book} from "src/types/models/Book"
 
+const EMPTY_BOOK = {
+    title: "",
+    author: "",
+    publisher: "",
+}
+
 const BookDetails = () => {
     const {id: bookID} = useParams()
-    const [book, setBook] = useState<Book>()
+    const [book, setBook] = useState<Book>(EMPTY_BOOK)
+    const [formBook, setFormBook] = useState<Book>(EMPTY_BOOK)
+    const {title: formTitle, author: formAuthor, publisher: formPublisher} = formBook
 
     useEffect(() => {
         fetch(`/api/book/${bookID}`)
             .then(response => response.json())
             .then((data: Book) => {
                 setBook(data)
+                setFormBook(data)
             })
     }, [bookID]);
 
@@ -27,6 +36,17 @@ const BookDetails = () => {
             publisher: formData.get("publisher")
         }));
     }, [bookID])
+
+    const handleTextInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const key = e.target.name;
+
+        setFormBook((prevBook) => ({
+            ...prevBook,
+            [key]: value
+        }))
+    }, [setFormBook])
+
 
     return (
         <div style={{display: "flex", alignItems: "center", flexDirection: "column", width: "100%", gap: "4rem"}}>
@@ -48,13 +68,28 @@ const BookDetails = () => {
                         marginBottom: "8rem"
                     }
                     }>
-                    <input name={"title"} type={"text"} value={book?.title} placeholder={"Book title"}
-                           required={true}></input>
-                    <input name={"author"} type={"text"} value={book?.author} placeholder={"Book author"}
-                           required={true}></input>
-                    <input name={"publisher"} type={"text"} value={book?.publisher} placeholder={"Book publisher"}
-                           required={true}></input>
-                    <button type={"submit"}>Create</button>
+                    <input
+                        name={"title"}
+                        type={"text"}
+                        value={formTitle}
+                        placeholder={"Book title"}
+                        onChange={handleTextInputChange}
+                    />
+                    <input
+                        name={"author"}
+                        type={"text"}
+                        value={formAuthor}
+                        placeholder={"Book author"}
+                        onChange={handleTextInputChange}
+                    />
+                    <input
+                        name={"publisher"}
+                        type={"text"}
+                        value={formPublisher}
+                        placeholder={"Book publisher"}
+                        onChange={handleTextInputChange}
+                    />
+                    <button type={"submit"}>Update</button>
                 </form>
             </div>
         </div>
