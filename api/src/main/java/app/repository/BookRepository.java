@@ -1,6 +1,7 @@
 package app.repository;
 
 import app.db.AbstractRepository;
+import app.http.Pagination;
 import app.model.Book;
 
 import java.sql.PreparedStatement;
@@ -24,13 +25,22 @@ public class BookRepository extends AbstractRepository {
         });
     }
 
-    public List<Book> findAll() {
+    public List<Book> findAll(Pagination pagination) {
         return withConnection(conn -> {
             PreparedStatement ps = conn.prepareStatement(
-                    "SELECT id, title, author, publisher FROM books ORDER BY id"
+                    """
+                            SELECT id, title, author, publisher
+                            FROM books
+                            ORDER BY id
+                            LIMIT ?
+                            OFFSET ?
+                            """
             );
+            ps.setInt(1, pagination.limit());
+            ps.setInt(2, pagination.offset());
 
             ResultSet rs = ps.executeQuery();
+
             List<Book> books = new ArrayList<>();
             while (rs.next()) {
                 books.add(map(rs));
@@ -44,10 +54,10 @@ public class BookRepository extends AbstractRepository {
         return withConnection(conn -> {
             PreparedStatement ps = conn.prepareStatement(
                     """
-                    INSERT INTO books (title, author, publisher)
-                    VALUES (?, ?, ?)
-                    RETURNING id, title, author, publisher
-                    """
+                            INSERT INTO books (title, author, publisher)
+                            VALUES (?, ?, ?)
+                            RETURNING id, title, author, publisher
+                            """
             );
 
             ps.setString(1, book.getTitle());

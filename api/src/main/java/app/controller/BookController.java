@@ -1,6 +1,7 @@
 package app.controller;
 
 import app.http.PaginatedResponse;
+import app.http.PaginationPolicy;
 import app.http.Request;
 import app.http.Response;
 import app.model.Book;
@@ -10,8 +11,8 @@ import app.service.BookService;
 import java.io.IOException;
 import java.util.Map;
 
-public class BookController implements Controller{
-
+public class BookController implements Controller {
+    private final PaginationPolicy paginationPolicy = new PaginationPolicy(20, 100, 0);
     private final BookService bookService = new BookService();
 
     @Override
@@ -23,8 +24,8 @@ public class BookController implements Controller{
 
     public Response get(Request req) {
         /*
-        * Handle path parameter with typecasting
-        */
+         * Handle path parameter with typecasting
+         */
         String idParameter = req.pathParam("id");
         int id;
         try {
@@ -39,10 +40,9 @@ public class BookController implements Controller{
 
     // List all with pagination
     public Response listAll(Request req) {
-        int offset = 0, limit = 10;
-        if (req.queryParam("offset") != null) offset = Integer.parseInt(req.queryParam("offset"));
-        if (req.queryParam("limit") != null) limit = Integer.parseInt(req.queryParam("limit"));
-
+        Integer offset = req.queryParamAsInt("offset");
+        Integer limit = req.queryParamAsInt("limit");
+        
         PaginatedResponse<Book> result = bookService.getBooks(offset, limit);
         return Response.json(200, result);
     }
