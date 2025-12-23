@@ -3,6 +3,7 @@ import {useParams, useNavigate} from "react-router-dom";
 import type {Book} from "src/types/models/Book"
 
 const EMPTY_BOOK = {
+    id: 0,
     title: "",
     author: "",
     publisher: "",
