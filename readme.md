@@ -35,6 +35,8 @@ make prod
 ```
 
 Starts all containers using the production Docker Compose setup.
+<br/>
+UI Available @ localhost
 
 ---
 

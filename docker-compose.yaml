@@ -27,7 +27,7 @@ services:
     build:
       context: ./frontend
     ports:
-      - "8080:80"   # Nginx serves the built frontend on port 80 internally
+      - "80:80"   # Nginx serves the built frontend on port 80 internally
 
 volumes:
   pgdata:
