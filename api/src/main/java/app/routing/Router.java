@@ -1,7 +1,9 @@
 package app.routing;
 
+import app.http.ErrorResponse;
 import app.http.Request;
 import app.http.Response;
+import app.http.exception.ApiException;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.util.*;
@@ -32,27 +34,34 @@ public class Router {
     }
 
     public Response dispatch(HttpExchange exchange) throws Exception {
-        String method = exchange.getRequestMethod();
-        String path = exchange.getRequestURI().getPath();
-        String rawQuery = exchange.getRequestURI().getRawQuery();
+        try {
+            String method = exchange.getRequestMethod();
+            String path = exchange.getRequestURI().getPath();
+            String rawQuery = exchange.getRequestURI().getRawQuery();
 
-        Map<String, String> queryParams = parseQuery(rawQuery);
+            Map<String, String> queryParams = parseQuery(rawQuery);
 
-        for (Route route : routes) {
-            if (!route.method.equalsIgnoreCase(method)) continue;
+            for (Route route : routes) {
+                if (!route.method.equalsIgnoreCase(method)) continue;
 
-            Matcher matcher = route.pathPattern.matcher(path);
-            if (matcher.matches()) {
-                Map<String, String> pathParams = new HashMap<>();
-                for (int i = 0; i < route.paramNames.size(); i++) {
-                    pathParams.put(route.paramNames.get(i), matcher.group(i + 1));
+                Matcher matcher = route.pathPattern.matcher(path);
+                if (matcher.matches()) {
+                    Map<String, String> pathParams = new HashMap<>();
+                    for (int i = 0; i < route.paramNames.size(); i++) {
+                        pathParams.put(route.paramNames.get(i), matcher.group(i + 1));
+                    }
+                    Request request = new Request(exchange, pathParams, queryParams);
+                    return route.handler.handle(request);
                 }
-                Request request = new Request(exchange, pathParams, queryParams);
-                return route.handler.handle(request);
             }
-        }
 
-        return Response.json(404, Map.of("error", "Not Found"));
+            return Response.json(404, Map.of("error", "Not Found"));
+        } catch (ApiException ex) {
+            // Known API exceptions (400, 404, 401, etc)
+            return Response.json(ex.getStatus(), new ErrorResponse(ex.getStatus(), ex.getMessage()));
+        } catch (Exception ex) {
+            return Response.json(500, new ErrorResponse(500, "Internal Server Error"));
+        }
     }
 
     private Map<String, String> parseQuery(String rawQuery) {
