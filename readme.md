@@ -1,83 +1,121 @@
-# Vanilla Java MVC API Template
+# React + Java + Postgres Template
 
-A lightweight, **framework-free MVC API template** built with plain Java and Docker.  
-Designed to serve a **JSON-only API** intended to be consumed by a **Vite + React frontend**.
+This repository is a minimal full‑stack MVC template with:
 
-This project intentionally avoids frameworks (Spring, Jakarta, etc.) in order to provide:
-
-- Full control over application flow
-- Minimal magic and hidden behavior
-- Clear separation of concerns
-- Easy learning, debugging, and extension
-
----
-
-## Stack
-
-- **Java 18** (Zulu / Temurin)
-- **PostgreSQL 16**
-- **JDBC** with **HikariCP** connection pooling
-- **com.sun.net.httpserver** (built-in HTTP server)
-- **Docker & Docker Compose**
-- **Maven** (build & dependency management)
-
----
-
-## Project Characteristics
-
-- JSON-only API (no server-side rendering)
-- Explicit MVC-style layering
-- Plain SQL (no ORM)
-- Docker-first development workflow
-- Single executable JAR output
+* **Frontend**: React + Vite
+* **Backend**: Vanilla Java HTTP server (no framework)
+* **Database**: PostgreSQL
+* **Infra**: Docker + Docker Compose
 
 ---
 
 ## Requirements
 
-You need the following installed locally:
+* Docker & Docker Compose
+* GNU Make
+* Node.js (only required for frontend dev mode)
 
-- Java **18**
-- Maven **3.9+**
-- Docker + Docker Compose
-- `make`
-
-Verify your setup:
-
-```bash
-java -version
-mvn -version
-docker --version
-docker compose version
-make --version
-```
 ---
-## Running the Application
-### Development Mode
-Run API + DB in Docker, frontend with Vite (HMR):
-```bash
-make fe-dev
-```
-### Production Mode
-Run all services fully in Docker (frontend served by Nginx):
+
+## Makefile Commands
+
+### Production (API + DB + built frontend)
+
 ```bash
 make prod
 ```
-### Backend Helpers
-Rebuild and restart the API after code changes:
+
+Starts all containers using the production Docker Compose setup.
+
+---
+
+### Frontend Development (Vite + HMR)
+
+```bash
+make fe-dev
+```
+
+* Starts API and DB using the dev Docker Compose file
+* Runs Vite locally with Hot Module Reloading
+
+Frontend available at:
+
+```
+http://localhost:5173
+```
+
+API available at:
+
+```
+http://localhost:9090
+```
+
+API docs (swagger) available at:
+
+```` 
+http://localhost:8081
+````
+
+---
+
+### Rebuild API Only
+
 ```bash
 make api-rebuild
 ```
-View API Logs:
+
+Rebuilds and restarts only the API container. Intended for backend development.
+
+---
+
+### Logs
+
 ```bash
 make api-logs
+make db-logs
 ```
-### Stopping and Cleaning
-Stop all running containers:
+
+Follow logs for API or database containers.
+
+---
+
+### Stop Containers
+
 ```bash
 make down
 ```
-Stop and remove containers + volumes (DB reset):
+
+Stops both production and dev Docker Compose stacks.
+
+---
+
+### Clean Volumes
+
 ```bash
 make clean
 ```
+
+Stops containers and removes volumes (database reset).
+
+---
+
+### Frontend Cleanup
+
+```bash
+make fe-clean
+```
+
+Removes `node_modules` and `package-lock.json` from the frontend.
+
+---
+
+## Notes
+
+* Backend changes require rebuilding the API container
+* Frontend dev mode uses a proxy to the API (`/api`)
+* Swagger UI is enabled only in dev compose
+* OpenAPI spec is served statically by the API
+
+---
+
+This template intentionally avoids heavy frameworks to keep architecture explicit and educational.

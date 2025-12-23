@@ -4,6 +4,7 @@ import app.http.PaginatedResponse;
 import app.http.PaginationPolicy;
 import app.http.Request;
 import app.http.Response;
+import app.http.exception.BadRequestException;
 import app.model.Book;
 import app.routing.Router;
 import app.service.BookService;
@@ -24,7 +25,6 @@ public class BookController implements Controller {
         router.register("DELETE", "/book/{id}", this::delete);
     }
 
-    // List all with pagination
     public Response list(Request req) {
         Integer offset = req.queryParamAsInt("offset");
         Integer limit = req.queryParamAsInt("limit");
@@ -35,11 +35,13 @@ public class BookController implements Controller {
 
     public Response read(Request req) {
         Integer id = req.pathParamAsInt("id");
+        if (id == null) {
+            throw new BadRequestException("id is required");
+        }
         Book book = bookService.getBookById(id);
         return Response.json(200, book);
     }
 
-    // Create book
     public Response create(Request req) throws IOException {
         Book book = req.body(Book.class);
         Book created = bookService.register(book);
@@ -48,12 +50,18 @@ public class BookController implements Controller {
 
     public Response update(Request req) throws IOException {
         Integer id = req.pathParamAsInt("id");
+        if (id == null) {
+            throw new BadRequestException("id is required");
+        }
         Book book = req.body(Book.class);
         return bookService.updateBook(id, book);
     }
 
     public Response delete(Request req) {
         Integer id = req.pathParamAsInt("id");
+        if (id == null) {
+            throw new BadRequestException("id is required");
+        }
         return bookService.deleteBook(id);
     }
 }
