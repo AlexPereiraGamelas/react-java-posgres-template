@@ -9,7 +9,7 @@ const handleSubmit = (form: FormEvent<HTMLFormElement>) => {
     const formData = new FormData(form.currentTarget);
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/books/new", true);
+    xhr.open("POST", "/api/book/new", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
         title: formData.get("title"),
@@ -22,7 +22,7 @@ const Landing = () => {
     const [books, setBooks] = useState<PaginatedResponse<Book>>()
 
     useEffect(() => {
-        fetch("/api/books")
+        fetch("/api/book")
             .then(response => response.json())
             .then((data: PaginatedResponse<Book>) => {
                 setBooks(data)

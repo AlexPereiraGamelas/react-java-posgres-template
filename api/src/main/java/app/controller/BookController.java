@@ -12,19 +12,15 @@ import app.service.BookService;
 import java.io.IOException;
 import java.util.Map;
 
-public class BookController implements Controller {
+public class BookController extends CRUDController<Book, Integer> {
     private final PaginationPolicy paginationPolicy = new PaginationPolicy(20, 100, 0);
     private final BookService bookService = new BookService();
 
-    @Override
-    public void registerRoutes(Router router) {
-        router.register("GET", "/book/{id}", this::read);
-        router.register("GET", "/books", this::list);
-        router.register("POST", "/books/new", this::create);
-        router.register("PUT", "/book/{id}", this::update);
-        router.register("DELETE", "/book/{id}", this::delete);
+    public BookController() {
+        super("/book");
     }
 
+    @Override
     public Response list(Request req) {
         Integer offset = req.queryParamAsInt("offset");
         Integer limit = req.queryParamAsInt("limit");
@@ -33,6 +29,7 @@ public class BookController implements Controller {
         return Response.json(200, result);
     }
 
+    @Override
     public Response read(Request req) {
         Integer id = req.pathParamAsInt("id");
         if (id == null) {
@@ -42,12 +39,14 @@ public class BookController implements Controller {
         return Response.json(200, book);
     }
 
+    @Override
     public Response create(Request req) throws IOException {
         Book book = req.body(Book.class);
         Book created = bookService.register(book);
         return Response.json(201, created);
     }
 
+    @Override
     public Response update(Request req) throws IOException {
         Integer id = req.pathParamAsInt("id");
         if (id == null) {
@@ -57,6 +56,7 @@ public class BookController implements Controller {
         return bookService.updateBook(id, book);
     }
 
+    @Override
     public Response delete(Request req) {
         Integer id = req.pathParamAsInt("id");
         if (id == null) {

@@ -25,4 +25,5 @@ down:
 	docker compose down
 
 clean:
+	docker compose -f docker-compose.dev.yaml down -v
 	docker compose down -v
