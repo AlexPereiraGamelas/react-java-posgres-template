@@ -17,6 +17,15 @@ This repository is a minimal full‑stack MVC template with:
 
 ---
 
+## Getting Started
+
+````
+git clone <repo>
+make prod
+````
+
+--- 
+
 ## Makefile Commands
 
 ### Production (API + DB + built frontend)
