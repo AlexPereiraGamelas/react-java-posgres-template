@@ -1,4 +1,4 @@
-import {type FormEvent, useCallback, useEffect, useState} from 'react'
+import {useCallback, useEffect, useState} from 'react'
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 
 import {Landing, BookDetails} from "src/pages"

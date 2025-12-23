@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {type FormEvent, useEffect, useState} from "react";
 import {Link} from "react-router-dom"
 
 import type {PaginatedResponse} from "src/types/api/PaginatedResponse"
