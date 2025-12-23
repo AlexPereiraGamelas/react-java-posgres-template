@@ -12,7 +12,7 @@ import app.service.BookService;
 import java.io.IOException;
 import java.util.Map;
 
-public class BookController extends CRUDController<Book, Integer> {
+public class BookController extends CRUDController {
     private final PaginationPolicy paginationPolicy = new PaginationPolicy(20, 100, 0);
     private final BookService bookService = new BookService();
 

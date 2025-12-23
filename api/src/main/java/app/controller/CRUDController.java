@@ -4,7 +4,7 @@ import app.http.Request;
 import app.http.Response;
 import app.routing.Router;
 
-public abstract class CRUDController<T, ID> implements Controller {
+public abstract class CRUDController implements Controller {
 
     protected final String basePath;
 
