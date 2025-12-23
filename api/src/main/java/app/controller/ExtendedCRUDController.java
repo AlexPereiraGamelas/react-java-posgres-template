@@ -2,7 +2,7 @@ package app.controller;
 
 import app.routing.Router;
 
-public abstract class ExtendedCRUDController<T, ID> extends CRUDController<T, ID> {
+public abstract class ExtendedCRUDController extends CRUDController {
 
     protected ExtendedCRUDController(String basePath) {
         super(basePath);
