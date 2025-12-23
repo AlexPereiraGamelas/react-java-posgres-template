@@ -21,6 +21,7 @@ db-logs:
 	docker compose logs -f db
 
 down:
+	docker compose -f docker-compose.dev.yaml down
 	docker compose down
 
 clean:

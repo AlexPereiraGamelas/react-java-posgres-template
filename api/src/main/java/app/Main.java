@@ -2,6 +2,7 @@ package app;
 
 import app.controller.BookController;
 import app.controller.Controller;
+import app.controller.DocsController;
 import app.http.FrontController;
 import app.routing.Router;
 import com.sun.net.httpserver.HttpServer;
@@ -18,9 +19,10 @@ public class Main {
 
         //Controllers
         List<Controller> controllers = List.of(
+                new DocsController(),
                 new BookController()
         );
-        
+
         //Route Registry
         for (Controller c : controllers) {
             c.registerRoutes(router);
