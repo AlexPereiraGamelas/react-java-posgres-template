@@ -4,6 +4,8 @@ import {Link} from "react-router-dom"
 import type {PaginatedResponse} from "src/types/api/PaginatedResponse"
 import type {Book} from "src/types/models/Book"
 
+import "./index.css"
+
 const handleSubmit = (form: FormEvent<HTMLFormElement>) => {
     form.preventDefault();
     const formData = new FormData(form.currentTarget);
@@ -16,6 +18,16 @@ const handleSubmit = (form: FormEvent<HTMLFormElement>) => {
         author: formData.get("author"),
         publisher: formData.get("publisher")
     }));
+}
+
+const BookPreview = ({book}: { book: Book }) => {
+    return (
+        <div key={book?.id} className={"book-preview"}>
+            <h2>{book?.title}</h2>
+            <Link to={`/book/${book?.id}`}>See More</Link>
+            <hr/>
+        </div>
+    )
 }
 
 const Landing = () => {
@@ -42,16 +54,14 @@ const Landing = () => {
                 <button type={"submit"}>Create</button>
             </form>
 
-            <div>
+            <div className={"book-list"}>
                 <h1>All Books</h1>
                 <hr/>
-                {books?.items.map(book => (
-                    <div key={book?.id}>
-                        <h2>{book?.title}</h2>
-                        <Link to={`/book/${book?.id}`}>See More</Link>
-                        <hr/>
-                    </div>
-                ))}
+                <div className={"book-list-container"}>
+                    {books?.items.map(book => (
+                        <BookPreview book={book}/>
+                    ))}
+                </div>
             </div>
         </main>
     )

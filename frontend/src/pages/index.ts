@@ -1,2 +1,2 @@
-export {default as Landing} from "./Landing"
-export {default as BookDetails} from "./BookDetails"
+export {default as Landing} from "./Landing/index"
+export {default as BookDetails} from "./BookDetails/index"
